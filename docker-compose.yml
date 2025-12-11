@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  widget:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  demo:
+    image: nginx:alpine
+    volumes:
+      - ./demo:/usr/share/nginx/html:ro
+      - ./dist:/usr/share/nginx/html/dist:ro
+    ports:
+      - "3000:80"
+    restart: unless-stopped

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R2 Stocks Widget - Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+      font-size: 3rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .description {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .widgets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .widget-wrapper {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .widget-title {
+      color: white;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .code-section {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 16px;
+      margin-top: 40px;
+    }
+
+    .code-section h2 {
+      color: white;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+
+    pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+    }
+
+    .controls {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 16px;
+      margin-top: 30px;
+    }
+
+    .controls h3 {
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: white;
+      color: #667eea;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📈 R2 Stocks Widget</h1>
+    <p class="description">
+      Fast, embeddable stock quote widget with real-time data and observability
+    </p>
+
+    <div class="widgets-grid">
+      <div class="widget-wrapper">
+        <div class="widget-title">Default Theme - AAPL</div>
+        <div id="widget-1"></div>
+      </div>
+
+      <div class="widget-wrapper">
+        <div class="widget-title">Dark Theme - MSFT</div>
+        <div id="widget-2"></div>
+      </div>
+
+      <div class="widget-wrapper">
+        <div class="widget-title">Custom Theme - GOOGL</div>
+        <div id="widget-3"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <h3>Widget Controls</h3>
+      <div class="button-group">
+        <button onclick="changeSymbol()">Change Symbol (TSLA)</button>
+        <button onclick="changeTheme()">Toggle Theme</button>
+        <button onclick="destroyWidget()">Destroy Widget 1</button>
+        <button onclick="recreateWidget()">Recreate Widget 1</button>
+      </div>
+    </div>
+
+    <div class="code-section">
+      <h2>🚀 Quick Start</h2>
+      <pre><code>&lt;!-- Add container to your page --&gt;
+&lt;div id="stocks-widget"&gt;&lt;/div&gt;
+
+&lt;!-- Include the widget script --&gt;
+&lt;script src="stocks.bundle.js"&gt;&lt;/script&gt;
+
+&lt;!-- Initialize the widget --&gt;
+&lt;script&gt;
+  StocksSnapshot.init({
+    containerId: 'stocks-widget',
+    symbol: 'AAPL',
+    apiKey: 'YOUR_API_KEY',
+    refreshInterval: 60000,
+    theme: {
+      primaryColor: '#007bff',
+      backgroundColor: '#ffffff',
+      textColor: '#333333'
+    }
+  });
+&lt;/script&gt;</code></pre>
+    </div>
+  </div>
+
+  <script src="../dist/stocks.bundle.js"></script>
+  <script>
+    const API_KEY = 'demo';
+
+    async function initWidgets() {
+      try {
+        await StocksSnapshot.init({
+          containerId: 'widget-1',
+          symbol: 'AAPL',
+          apiKey: API_KEY,
+          refreshInterval: 300000,
+          observability: {
+            enabled: true,
+            debug: true,
+          }
+        });
+
+        await StocksSnapshot.init({
+          containerId: 'widget-2',
+          symbol: 'MSFT',
+          apiKey: API_KEY,
+          refreshInterval: 300000,
+          theme: {
+            backgroundColor: '#1e1e1e',
+            textColor: '#e0e0e0',
+          },
+          observability: {
+            enabled: true,
+            debug: true,
+          }
+        });
+
+        await StocksSnapshot.init({
+          containerId: 'widget-3',
+          symbol: 'GOOGL',
+          apiKey: API_KEY,
+          refreshInterval: 300000,
+          theme: {
+            primaryColor: '#10b981',
+            backgroundColor: '#f0fdf4',
+            textColor: '#064e3b',
+            borderRadius: '16px',
+          },
+          observability: {
+            enabled: true,
+            debug: true,
+          }
+        });
+
+        console.log('All widgets initialized successfully!');
+      } catch (error) {
+        console.error('Failed to initialize widgets:', error);
+      }
+    }
+
+    function changeSymbol() {
+      StocksSnapshot.update('widget-1', { symbol: 'TSLA' });
+    }
+
+    function changeTheme() {
+      StocksSnapshot.update('widget-2', {
+        theme: {
+          backgroundColor: '#fef3c7',
+          textColor: '#78350f',
+          primaryColor: '#f59e0b',
+        }
+      });
+    }
+
+    function destroyWidget() {
+      try {
+        StocksSnapshot.destroy('widget-1');
+        console.log('Widget 1 destroyed');
+      } catch (error) {
+        console.error('Failed to destroy widget:', error);
+      }
+    }
+
+    async function recreateWidget() {
+      try {
+        await StocksSnapshot.init({
+          containerId: 'widget-1',
+          symbol: 'AAPL',
+          apiKey: API_KEY,
+          refreshInterval: 300000,
+          observability: {
+            enabled: true,
+            debug: true,
+          }
+        });
+        console.log('Widget 1 recreated');
+      } catch (error) {
+        console.error('Failed to recreate widget:', error);
+      }
+    }
+
+    initWidgets();
+  </script>
+</body>
+</html>
