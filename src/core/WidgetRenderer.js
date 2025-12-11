@@ -5,7 +5,13 @@ export const createWidgetRenderer = (telemetry) => {
     const container = document.createElement("div");
     container.className = "stocks-widget";
     container.innerHTML = '<div class="loading">Loading stock data...</div>';
-    shadowRoot.innerHTML = "";
+
+    // Remove only non-style elements to preserve styles
+    const elementsToRemove = Array.from(shadowRoot.children).filter(
+      child => child.tagName !== 'STYLE'
+    );
+    elementsToRemove.forEach(el => el.remove());
+
     shadowRoot.appendChild(container);
   };
 
@@ -13,7 +19,13 @@ export const createWidgetRenderer = (telemetry) => {
     const container = document.createElement("div");
     container.className = "stocks-widget";
     container.innerHTML = `<div class="error">Error: ${message}</div>`;
-    shadowRoot.innerHTML = "";
+
+    // Remove only non-style elements to preserve styles
+    const elementsToRemove = Array.from(shadowRoot.children).filter(
+      child => child.tagName !== 'STYLE'
+    );
+    elementsToRemove.forEach(el => el.remove());
+
     shadowRoot.appendChild(container);
   };
 

@@ -4,7 +4,8 @@ export const createStockDataService = (apiKey, telemetry) => {
   const parseQuoteData = (data) => {
     const quote = data["Global Quote"];
     if (!quote || Object.keys(quote).length === 0) {
-      throw new Error("No data available for this symbol");
+      console.error("API Response:", JSON.stringify(data, null, 2));
+      throw new Error("No data available. Check API key or wait for rate limit (5 calls/min)");
     }
 
     return {
@@ -32,12 +33,19 @@ export const createStockDataService = (apiKey, telemetry) => {
 
       if (data.Note) {
         telemetry.recordError("rate_limit");
-        throw new Error("API rate limit exceeded. Please try again later.");
+        console.warn("Rate limit message:", data.Note);
+        throw new Error("API rate limit (5 calls/min). Please wait and refresh.");
       }
 
       if (data["Error Message"]) {
         telemetry.recordError("invalid_symbol");
-        throw new Error("Invalid stock symbol");
+        throw new Error(`Invalid symbol: ${data["Error Message"]}`);
+      }
+
+      if (data.Information) {
+        telemetry.recordError("api_info");
+        console.warn("API Info:", data.Information);
+        throw new Error("API limit reached. Please wait and try again.");
       }
 
       const quote = parseQuoteData(data);

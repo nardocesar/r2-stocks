@@ -1,6 +1,6 @@
 import { createConfigManager } from "./ConfigManager.js";
 import { createShadowDOMManager } from "./ShadowDOMManager.js";
-import { createTelemetryManager } from "../observability/TelemetryManager.js";
+import { createNoOpTelemetryManager } from "../observability/NoOpTelemetryManager.js";
 import { createStockDataService } from "../services/StockDataService.js";
 import { createWidgetRenderer } from "./WidgetRenderer.js";
 import { createRefreshManager } from "../services/RefreshManager.js";
@@ -24,8 +24,15 @@ export const createStocksSnapshot = () => {
       throw new Error(`Container element with id '${config.containerId}' not found`);
     }
 
-    const telemetry = createTelemetryManager(config.observability);
-    telemetry.initialize();
+    // Lazy-load telemetry only when observability is enabled
+    let telemetry;
+    if (config.observability?.enabled) {
+      const { createTelemetryManager } = await import("../observability/TelemetryManager.js");
+      telemetry = createTelemetryManager(config.observability);
+      telemetry.initialize();
+    } else {
+      telemetry = createNoOpTelemetryManager();
+    }
 
     const rootSpan = telemetry.startSpan("stocks.init");
 

@@ -47,6 +47,7 @@
     }
 
     .widget-wrapper {
+      box-sizing: border-box;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
       padding: 20px;
@@ -132,7 +133,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>📈 R2 Stocks Widget</h1>
+    <h1>R2 Stocks Widget</h1>
     <p class="description">
       Fast, embeddable stock quote widget with real-time data and observability
     </p>
@@ -165,7 +166,7 @@
     </div>
 
     <div class="code-section">
-      <h2>🚀 Quick Start</h2>
+      <h2>Quick Start</h2>
       <pre><code>&lt;!-- Add container to your page --&gt;
 &lt;div id="stocks-widget"&gt;&lt;/div&gt;
 
@@ -191,10 +192,15 @@
 
   <script src="../dist/stocks.bundle.js"></script>
   <script>
-    const API_KEY = 'demo';
+    // Replace 'demo' with your Alpha Vantage API key
+    // Get one free at: https://www.alphavantage.co/support/#api-key
+    const API_KEY = 'HZ2WELL972VG5DP1'; // I know it's a bad idea to store the API key in the code, but it's just a demo.
 
     async function initWidgets() {
+      const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
       try {
+        console.log('Initializing widget 1...');
         await StocksSnapshot.init({
           containerId: 'widget-1',
           symbol: 'AAPL',
@@ -205,7 +211,11 @@
             debug: true,
           }
         });
+        console.log('✓ Widget 1 initialized');
 
+        await delay(13000);
+
+        console.log('Initializing widget 2...');
         await StocksSnapshot.init({
           containerId: 'widget-2',
           symbol: 'MSFT',
@@ -220,7 +230,11 @@
             debug: true,
           }
         });
+        console.log('✓ Widget 2 initialized');
 
+        await delay(13000);
+
+        console.log('Initializing widget 3...');
         await StocksSnapshot.init({
           containerId: 'widget-3',
           symbol: 'GOOGL',
@@ -237,6 +251,7 @@
             debug: true,
           }
         });
+        console.log('✓ Widget 3 initialized');
 
         console.log('All widgets initialized successfully!');
       } catch (error) {
@@ -248,14 +263,31 @@
       StocksSnapshot.update('widget-1', { symbol: 'TSLA' });
     }
 
+    let isDarkTheme = true;
+
     function changeTheme() {
-      StocksSnapshot.update('widget-2', {
-        theme: {
+      try {
+        console.log('Updating theme for widget-2...');
+
+        const newTheme = isDarkTheme ? {
           backgroundColor: '#fef3c7',
           textColor: '#78350f',
           primaryColor: '#f59e0b',
-        }
-      });
+        } : {
+          backgroundColor: '#1e1e1e',
+          textColor: '#e0e0e0',
+        };
+
+        StocksSnapshot.update('widget-2', {
+          theme: newTheme
+        });
+
+        isDarkTheme = !isDarkTheme;
+        console.log('✓ Theme toggled to:', isDarkTheme ? 'dark' : 'amber');
+      } catch (error) {
+        console.error('✗ Theme update failed:', error);
+        alert('Theme update failed: ' + error.message);
+      }
     }
 
     function destroyWidget() {

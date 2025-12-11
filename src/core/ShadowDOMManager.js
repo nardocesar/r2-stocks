@@ -133,7 +133,13 @@ export const createShadowDOMManager = () => {
   const themeEngine = createThemeEngine();
 
   const createShadowRoot = (container, theme) => {
-    const shadowRoot = container.attachShadow({ mode: "open" });
+    let shadowRoot = container.shadowRoot;
+
+    if (!shadowRoot) {
+      shadowRoot = container.attachShadow({ mode: "open" });
+    } else {
+      shadowRoot.innerHTML = "";
+    }
 
     const styleSheet = document.createElement("style");
     styleSheet.textContent = baseStyles;

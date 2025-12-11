@@ -106,18 +106,6 @@
   font-size: 14px;
 }
 
-@media (min-width: 768px) {
-  .stocks-widget {
-    min-width: 320px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .stocks-widget {
-    min-width: 360px;
-  }
-}
-
 @media (prefers-color-scheme: dark) {
   :host {
     --stocks-bg-color: #1e1e1e;
