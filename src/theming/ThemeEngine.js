@@ -18,18 +18,35 @@ export const createThemeEngine = () => {
       variables.push(`--stocks-border-radius: ${theme.borderRadius}`);
     }
 
-    return `:host { ${variables.join("; ")}; }`;
+    if (variables.length === 0) {
+      return '';
+    }
+
+    return `:host { ${variables.join("; ")} }`;
   };
 
   const applyTheme = (shadowRoot, theme) => {
-    const existingThemeSheet = shadowRoot.querySelector("#theme-variables");
-    if (existingThemeSheet) {
-      existingThemeSheet.textContent = generateThemeCSS(theme);
+    if (!shadowRoot) {
+      console.error('applyTheme: shadowRoot is null or undefined');
+      return;
+    }
+
+    const themeCSS = generateThemeCSS(theme);
+    if (!themeCSS) {
+      console.warn('applyTheme: No theme CSS generated');
+      return;
+    }
+
+    let themeSheet = shadowRoot.querySelector("#theme-variables");
+    if (themeSheet) {
+      themeSheet.textContent = themeCSS;
+      console.log('Theme updated:', theme);
     } else {
-      const themeSheet = document.createElement("style");
+      themeSheet = document.createElement("style");
       themeSheet.id = "theme-variables";
-      themeSheet.textContent = generateThemeCSS(theme);
+      themeSheet.textContent = themeCSS;
       shadowRoot.appendChild(themeSheet);
+      console.log('Theme applied:', theme);
     }
   };
 

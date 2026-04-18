@@ -109,7 +109,25 @@ StocksSnapshot.destroy('widget-1');
 
 ```bash
 npm install
+npm run build
 ```
+
+### Testing the Widget Locally
+
+After building, you have two demo options:
+
+#### Option 1: Interactive Demo (No API Key Required)
+Open `demo/demo.html` directly in your browser:
+```bash
+open demo/demo.html
+```
+This version demonstrates all widget controls and API methods without needing a real API key.
+
+#### Option 2: Full Demo with Real Data
+1. Get a free API key from [Alpha Vantage](https://www.alphavantage.co/support/#api-key)
+2. Open `demo/index.html` in a text editor
+3. Replace `'demo'` with your actual API key
+4. Open `demo/index.html` in your browser
 
 ### Development Server
 
